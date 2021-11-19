@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.neu.weatherforecasting.R;
+import edu.neu.weatherforecasting.adapters.WeatherRecyclerAdapter;
 import edu.neu.weatherforecasting.data.model.Weather;
 import edu.neu.weatherforecasting.http.HttpUtil;
 import edu.neu.weatherforecasting.ui.fragment.LoginFragment;
@@ -551,6 +552,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         return "";
+    }
+
+    public WeatherRecyclerAdapter getAdapter(int id) {
+        WeatherRecyclerAdapter weatherRecyclerAdapter;
+        if (id == 0) {
+            weatherRecyclerAdapter = new WeatherRecyclerAdapter(longTermTodayWeather);
+        } else if (id == 1) {
+            weatherRecyclerAdapter = new WeatherRecyclerAdapter(longTermTomorrowWeather);
+        } else {
+            weatherRecyclerAdapter = new WeatherRecyclerAdapter(longTermWeather);
+        }
+        return weatherRecyclerAdapter;
     }
 
 }

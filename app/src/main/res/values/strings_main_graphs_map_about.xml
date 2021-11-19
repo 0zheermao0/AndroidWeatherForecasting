@@ -13,9 +13,9 @@
     <string name="loading_data">Loading...</string>
 
     <!-- Forecast cards -->
-    <string name="today">Today</string>
-    <string name="tomorrow">Tomorrow</string>
-    <string name="later">Later</string>
+    <string name="today">今天</string>
+    <string name="tomorrow">明天</string>
+    <string name="later">明天以后</string>
 
     <!-- Main activity headings -->
     <string name="wind">Wind</string>

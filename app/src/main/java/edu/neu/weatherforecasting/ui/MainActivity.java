@@ -61,6 +61,7 @@ import java.util.Map;
 import edu.neu.weatherforecasting.R;
 import edu.neu.weatherforecasting.adapters.ViewPagerAdapter;
 import edu.neu.weatherforecasting.adapters.WeatherRecyclerAdapter;
+import edu.neu.weatherforecasting.data.model.User;
 import edu.neu.weatherforecasting.data.model.Weather;
 import edu.neu.weatherforecasting.http.HttpUtil;
 import edu.neu.weatherforecasting.http.ParseResult;
@@ -117,10 +118,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private List<Weather> longTermTomorrowWeather = new ArrayList<>();
 
     public String recentCityId = "";
+    private String city = "shenyang";
 
     private Formatting formatting;
     private SharedPreferences prefs;
     private LinearLayout linearLayoutTapForGraphs;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +168,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         destroyed = false;
 
+        Bundle bundle = this.getIntent().getExtras();
+        if(bundle != null){
+            user = (User) bundle.getSerializable("user");
+            Log.i("main,user", user.toString());
+        }
+
         initMappings();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshWeather(city);
+                updateTodayWeatherUI();
+                updateLongTermWeatherUI();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -312,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            refreshWeather();
+            refreshWeather(city);
             updateTodayWeatherUI();
             updateLongTermWeatherUI();
             return true;
@@ -321,10 +341,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //            Intent intent = new Intent(MainActivity.this, MapActivity.class);
 //            startActivity(intent);
 //        }
-//        if (id == R.id.action_graphs) {
-//            Intent intent = new Intent(MainActivity.this, GraphActivity.class);
-//            startActivity(intent);
-//        }
+        if (id == R.id.action_graphs) {
+            Intent intent = new Intent(MainActivity.this, GraphActivity.class);
+            startActivity(intent);
+        }
         if (id == R.id.action_search) {
             searchCities();
             return true;
@@ -333,10 +353,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             getCityByLocation();
             return true;
         }
-//        if (id == R.id.action_settings) {
-//            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-//            startActivity(intent);
-//        }
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("user", user);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
 //        if (id == R.id.action_about) {
 //            aboutDialog();
 //            return true;
@@ -344,8 +367,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return super.onOptionsItemSelected(item);
     }
 
-    private void refreshWeather() {
-        HttpUtil.get("https://api.openweathermap.org/data/2.5/weather?q=Shenyang,cn&appid=3e29e62e2ddf6dd3d2ebd28aed069215&lang=zh_cn", new okhttp3.Callback() {
+    private void refreshWeather(String city) {
+        HttpUtil.get("https://api.openweathermap.org/data/2.5/weather?q=" + city + ",cn&appid=682bc403063d9ccf1ce9f02bfccb78e5&lang=zh_cn", new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -357,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
-        HttpUtil.get("https://api.openweathermap.org/data/2.5/forecast?q=Taoxian,cn&appid=3e29e62e2ddf6dd3d2ebd28aed069215&lang=zh_cn", new okhttp3.Callback() {
+        HttpUtil.get("https://api.openweathermap.org/data/2.5/forecast?q=" + city + ",cn&appid=682bc403063d9ccf1ce9f02bfccb78e5&lang=zh_cn", new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -386,10 +409,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         alert.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String result = input.getText().toString().trim();
-                if (!result.isEmpty()) {
+                city = input.getText().toString().trim();
+                if (!city.isEmpty()) {
 //                    new FindCitiesByNameTask(getApplicationContext(),
 //                            MainActivity.this, progressDialog).execute("city", result);
+                    refreshWeather(city);
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    updateTodayWeatherUI();
+                    updateLongTermWeatherUI();
                 }
             }
         });

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import edu.neu.weatherforecasting.R;
+import edu.neu.weatherforecasting.config.Config;
 import edu.neu.weatherforecasting.data.model.User;
 import edu.neu.weatherforecasting.http.RequestTask;
 import edu.neu.weatherforecasting.utils.ToastUtil;
@@ -103,9 +104,10 @@ public class RegisterFragment extends Fragment {
             public void onClick(View view) {
 
                 user = new User(et_username.getText().toString(), et_pwd.getText().toString());
+                user.setchName(et_nick_name.getText().toString());
                 RegisterRequest registerRequest = new RegisterRequest();
                 try {
-                    ToastUtil.showMsg(view.getContext(), registerRequest.register("http://e8a9-210-30-193-0.ngrok.io/user/register", user));
+                    ToastUtil.showMsg(view.getContext(), registerRequest.register(Config.domain + "/user/register", user));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -141,6 +143,7 @@ public class RegisterFragment extends Fragment {
             try {
                 jsonObject.put("username", user.getUsername());
                 jsonObject.put("password", user.getPwd());
+                jsonObject.put("chName", user.getchName());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

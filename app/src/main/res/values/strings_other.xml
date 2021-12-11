@@ -10,11 +10,11 @@
     <string name="msg_invalid_api_key">Invalid API key.</string>
 
     <!-- Location -->
-    <string name="settings_title_location">Location</string>
+    <string name="settings_title_location">定位</string>
     <string name="setting_update_location_automatically">Update location in background</string>
     <string name="location_settings">Location Settings</string>
     <string name="location_settings_message">Location is not enabled. Do you wish to go to the settings menu?</string>
-    <string name="location_settings_button">Settings</string>
+    <string name="location_settings_button">设置</string>
     <string name="location_search_heading">Locations</string>
 
     <!-- Widget -->

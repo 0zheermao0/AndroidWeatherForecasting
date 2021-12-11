@@ -11,9 +11,9 @@
     <string name="setting_auto_detect_location">Detect Location</string>
     <string name="setting_differentiateDaysByTint">Differentiate Days with Color</string>
 
-    <string name="setting_unit_mps">Meters per second (m/s)</string>
-    <string name="setting_unit_kph">Kilometers per hour (kph)</string>
-    <string name="setting_unit_mph">Miles per hour (mph)</string>
+    <string name="setting_unit_mps">米/秒 (m/s)</string>
+    <string name="setting_unit_kph">千米/小时 (kph)</string>
+    <string name="setting_unit_mph">米/小时 (mph)</string>
     <string name="setting_unit_bft">Beaufort wind scale (bft)</string>
     <string name="setting_unit_kn">Knots (kn)</string>
     <string name="setting_unit_Celsuis">Celsius</string>
@@ -39,9 +39,9 @@
     <string name="pressure_unit_inhg">in Hg</string>
 
     <string name="uvi_no_info">No Info</string>
-    <string name="uvi_low">Low</string>
-    <string name="uvi_moderate">Moderate</string>
-    <string name="uvi_high">High</string>
-    <string name="uvi_very_high">Very High</string>
-    <string name="uvi_extreme">Extreme</string>
+    <string name="uvi_low">低</string>
+    <string name="uvi_moderate">中等</string>
+    <string name="uvi_high">高</string>
+    <string name="uvi_very_high">很高</string>
+    <string name="uvi_extreme">高的不行</string>
 </resources>

@@ -1,10 +1,14 @@
 package edu.neu.weatherforecasting.data.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private Integer id;
     private String username;
     private String pwd;
     private String chName;
+    private Integer sex;
+    private String age;
 
     public User(Integer id, String username, String pwd, String chName) {
         this.id = id;
@@ -51,5 +55,33 @@ public class User {
 
     public void setchName(String chName) {
         this.chName = chName;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", pwd='" + pwd + '\'' +
+                ", chName='" + chName + '\'' +
+                ", sex=" + sex +
+                ", age='" + age + '\'' +
+                '}';
     }
 }

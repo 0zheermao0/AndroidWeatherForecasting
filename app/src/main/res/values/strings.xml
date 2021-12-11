@@ -1,5 +1,5 @@
 <resources>
-<!--    <string name="app_name">HelloWorld</string>-->
+    <!--    <string name="app_name">HelloWorld</string>-->
     <string name="tv_test1">那是真的nb</string>
     <string name="title_activity_bottom_navigaor">MainActivity</string>
     <string name="title_home">Home</string>

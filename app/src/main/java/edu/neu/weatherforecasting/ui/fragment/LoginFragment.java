@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import edu.neu.weatherforecasting.R;
+import edu.neu.weatherforecasting.config.Config;
 import edu.neu.weatherforecasting.data.model.User;
 import edu.neu.weatherforecasting.http.HttpUtil;
 import edu.neu.weatherforecasting.http.ParseResult;
@@ -105,6 +107,17 @@ public class LoginFragment extends Fragment {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // for easy testing
+                if(et_username.getText().toString().equals("1") && et_pwd.getText().toString().equals("1")){
+                    Intent intent = new Intent(view.getContext(), MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    user = new User("1", "1");
+                    user.setchName("测试用户");
+                    Log.i("user", user.toString());
+                    bundle.putSerializable("user", user);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
 
                 user = new User(et_username.getText().toString(), et_pwd.getText().toString());
                 JSONObject jsonObject = new JSONObject();
@@ -116,7 +129,7 @@ public class LoginFragment extends Fragment {
                 }
 
                 RequestBody body = RequestBody.create(jsonObject.toString(), JSON); // new
-                HttpUtil.post("http://5eaf-210-30-193-0.ngrok.io/user/login", body, new Callback() {
+                HttpUtil.post(Config.domain + "/user/login", body, new okhttp3.Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
@@ -124,9 +137,13 @@ public class LoginFragment extends Fragment {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        String token = parseJsonWithJsonObject(response);
+                        String token = parseJsonWithJsonObject(response, view);
                         if(token != null){
                             Intent intent = new Intent(view.getContext(), MainActivity.class);
+                            Bundle bundle = new Bundle();
+                            Log.i("user", user.toString());
+                            bundle.putSerializable("user", user);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                         }
                     }
@@ -156,12 +173,27 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private String parseJsonWithJsonObject(Response response) throws IOException {
+    private String parseJsonWithJsonObject(Response response, View view) throws IOException {
         String responseData=response.body().string();
+        Log.i("loginInfo", responseData);
         try{
             JSONObject jsonObject = new JSONObject(responseData);
-            return jsonObject.getJSONObject("data").getString("token");
+            if(jsonObject.getString("data").equals("null")){
+                Looper.prepare();
+                ToastUtil.showMsg(view.getContext(), "账号或密码错误");
+                Looper.loop();
+                return null;
+            }
+            Integer id = jsonObject.getJSONArray("data").getJSONObject(0).getInt("id");
+            String username = jsonObject.getJSONArray("data").getJSONObject(0).getString("username");
+            String password = jsonObject.getJSONArray("data").getJSONObject(0).getString("password");
+            String chName = jsonObject.getJSONArray("data").getJSONObject(0).getString("chName");
+            user = new User(id, username, password, chName);
+            return jsonObject.getJSONArray("data").getJSONObject(1).getString("token");
         } catch (JSONException e) {
+            Looper.prepare();
+            ToastUtil.showMsg(view.getContext(), "网络错误");
+            Looper.loop();
             e.printStackTrace();
         }
         return null;
